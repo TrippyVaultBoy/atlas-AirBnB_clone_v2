@@ -1,3 +1,6 @@
+-- creates hbnb_test_db database
+-- creates hbnb_test user and grants privileges
+
 CREATE DATABASE IF NOT EXISTS hbnb_test_db
 
 CREATE USER 'hbnb_test'@'localhost' IDENTIFIED BY 'hbnb_test_pwd'
