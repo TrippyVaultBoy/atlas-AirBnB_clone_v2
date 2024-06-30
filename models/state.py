@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
+"""Now includes switch for new storage system"""
 import models
 from models.base_model import BaseModel
 from models.base_model import Base
