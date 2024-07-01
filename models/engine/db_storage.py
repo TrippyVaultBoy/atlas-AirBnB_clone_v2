@@ -26,11 +26,11 @@ class DBStorage:
     __session = None
 
     def __init__(self):
-        HBNB_MYSQL_USER = os.getenv(HBNB_MYSQL_USER)
-        HBNB_MYSQL_PWD = os.getenv(HBNB_MYSQL_PWD)
-        HBNB_MYSQL_HOST = os.getenv(HBNB_MYSQL_HOST)
-        HBNB_MYSQL_DB = os.getenv(HBNB_MYSQL_DB)
-        HBNB_ENV = os.getenv(HBNB_ENV)
+        HBNB_MYSQL_USER = os.getenv('HBNB_MYSQL_USER')
+        HBNB_MYSQL_PWD = os.getenv('HBNB_MYSQL_PWD')
+        HBNB_MYSQL_HOST = os.getenv('HBNB_MYSQL_HOST')
+        HBNB_MYSQL_DB = os.getenv('HBNB_MYSQL_DB')
+        HBNB_ENV = os.getenv('HBNB_ENV', 'development')
         self.__engine = create_engine('mysql+mysqldb://hbnb_dev:hbnb_dev_pwd@localhost/hbnb_dev_db', pool_pre_ping=True)
 
         if os.getenv(HBNB_ENV) == 'test':
