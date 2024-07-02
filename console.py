@@ -76,7 +76,7 @@ class HBNBCommand(cmd.Cmd):
                     # check for *args or **kwargs
                     if (pline[0] == '{' and pline[-1] == '}'
                         and type(eval(pline)) is dict):
-                        _args = pline
+                            _args = pline
                     else:
                         _args = pline.replace(',', '')
             line = ' '.join([_cmd, _cls, _id, _args])
@@ -132,8 +132,8 @@ class HBNBCommand(cmd.Cmd):
                 try:
                     var = eval(attributes[1])
                     attributes[1] = var
-                except:
-                    pass
+                except (SyntaxError, NameError, ValueError) as e:
+                    print(f"Error: {e}")
                 if type(attributes[1]) is not tuple:
                     setattr(obj, attributes[0], attributes[1])
         except SyntaxError:
@@ -202,7 +202,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            del (storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -337,3 +337,4 @@ class HBNBCommand(cmd.Cmd):
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
+
