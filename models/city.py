@@ -12,6 +12,38 @@ class City(BaseModel, Base):
         state_id = Column(String(60),ForeignKey("states.id"), nullable=False)
         name = Column(String(128), nullable=False)
         __tablename__ = "cities"
+
+        def state_id(self):
+            """returns associated state id"""
+            return self.state_id
+
+        def state_id(self, value):
+            """sets state id"""
+            if not isinstance(value, str):
+                raise TypeError("state_id must be a string")
+            if len(value) > 60:
+                raise ValueError("state_id cannot be longer than 60 characters")
+            if not value.strip():
+                raise ValueError("state_id cannot be empty")
+            self._state_id = value.strip()
+
+        def name(self):
+            """returns name"""
+            return self.name
+
+        def name(self, value):
+            """sets name"""
+            if not isinstance(value, str):
+                raise TypeError("name must be a string")
+            if len(value) > 128:
+                raise ValueError("name cannot be longer than 128 characters")
+            if not value.strip():
+                raise ValueError("name cannot be empty")
+            self._name = value.strip()
+
     else:
-        state_id = ""
-        name = ""
+        def __init__(self, *args, **kwargs):
+            """initializes city"""
+            super().__init__(*args, **kwargs)
+            self.state_id = ""
+            self.name = ""
