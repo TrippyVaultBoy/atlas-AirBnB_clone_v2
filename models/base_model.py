@@ -8,6 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
 class BaseModel:
 
     id = Column(String(60), nullable=False, primary_key=True)
@@ -19,17 +20,17 @@ class BaseModel:
     # Add or replace in class BaseModel:
 
     # class attribute id
-        # represents a column containing a unique string (60 chars)
-        # can't be null
-        # primary key
+    # represents a column containing a unique string (60 chars)
+    # can't be null
+    # primary key
     # class attribute created_at
-        # represents a column containing a datetime
-        # can't be null
-        # default value is the current datetime ("datetime.utcnow()")
+    # represents a column containing a datetime
+    # can't be null
+    # default value is the current datetime ("datetime.utcnow()")
     # class attribute updated_at
-        # represents a column containing a datetime
-        # can't be null
-        # default value is the current datetime ("datetime.utcnow()")
+    # represents a column containing a datetime
+    # can't be null
+    # default value is the current datetime ("datetime.utcnow()")
 
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
@@ -42,14 +43,14 @@ class BaseModel:
             if not kwargs.get('updated_at'):
                 kwargs['updated_at'] = datetime.utcnow()
             else:
-                kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
-                                                         '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['updated_at'] = datetime.strptime(kwargs['updated_at']
+                                                         ,'%Y-%m-%dT%H:%M:%S.%f')
 
             if not kwargs.get('created_at'):
                 kwargs['created_at'] = datetime.utcnow()
             else:
-                kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
-                                                         '%Y-%m-%dT%H:%M:%S.%f')
+                kwargs['created_at'] = datetime.strptime(kwargs['created_at']
+                                                         ,'%Y-%m-%dT%H:%M:%S.%f')
 
             if kwargs.get('__class__'):
                 del kwargs['__class__']
@@ -86,7 +87,7 @@ class BaseModel:
         if '_sa_instance_state' in dictionary:
             del dictionary['_sa_instance_state']
         return dictionary
-    
+
     def delete(self):
         """deletes an instance based on class name and id"""
         from models import storage

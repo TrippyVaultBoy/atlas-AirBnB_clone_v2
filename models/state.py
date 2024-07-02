@@ -1,13 +1,11 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
-"""Now includes switch for new storage system"""
+"""State Module for HBNB project, includes switch for new storage system"""
 import models
 from models.base_model import BaseModel, Base
 from models.city import City
 import os
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String
-
 
 class State(BaseModel, Base):
     """ State class """

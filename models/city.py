@@ -6,11 +6,12 @@ import os
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
+
 class City(BaseModel, Base):
     """ The city class, contains state ID and name """
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = "cities"
-        state_id = Column(String(60),ForeignKey("states.id"), nullable=False)
+        state_id = Column(String(60), ForeignKey("states.id"), nullable=False)
         name = Column(String(128), nullable=False)
         places = relationship("Place", backref="cities", cascade="delete")
         __tablename__ = "cities"
@@ -24,7 +25,8 @@ class City(BaseModel, Base):
             if not isinstance(value, str):
                 raise TypeError("state_id must be a string")
             if len(value) > 60:
-                raise ValueError("state_id cannot be longer than 60 characters")
+                raise ValueError("state_id cannot be longer than 60 \
+                                characters")
             if not value.strip():
                 raise ValueError("state_id cannot be empty")
             self._state_id = value.strip()
