@@ -74,11 +74,12 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if (pline[0] == '{' and pline[-1] == '}'
-                            and type(eval(pline)) is dict):
+                    if pline[0] == '{' and pline[-1] =='}'\
+                            and type(eval(pline)) is dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
+                        # _args = _args.replace('\"', '')
             line = ' '.join([_cmd, _cls, _id, _args])
 
         except Exception as mess:
@@ -119,23 +120,15 @@ class HBNBCommand(cmd.Cmd):
             if not args:
                 raise SyntaxError()
             params = args.split(" ")
-            print(params)
             obj = eval("{}()".format(params[0]))
+            for i in range(1, len(params)):
+                attr_name, attr_value = params[i].split('=')
+                if attr_value:
+                    setattr(obj, attr_name, attr_value)
+                else:
+                    setattr(obj, attr_name, None)
             obj.save()
             print("{}".format(obj.id))
-            for i in range(1, len(params)):
-                params[i] = params[i].replace('=', ' ')
-
-                attributes = split(params[i])
-                attributes[1] = attributes[1].replace('_', ' ')
-
-                try:
-                    var = eval(attributes[1])
-                    attributes[1] = var
-                except (SyntaxError, NameError, ValueError) as e:
-                    print(f"Error: {e}")
-                if type(attributes[1]) is not tuple:
-                    setattr(obj, attributes[0], attributes[1])
         except SyntaxError:
             print("** class name missing **")
         except NameError:
@@ -202,7 +195,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del (storage.all()[key])
+            del(storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -334,7 +327,6 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
-
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

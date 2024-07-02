@@ -1,16 +1,17 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
+"""Now includes switch for new storage system"""
 import models
 from models.base_model import BaseModel, Base
 from models.city import City
 import os
-from sqlalchemy import Column
-from sqlalchemy import String
 from sqlalchemy.orm import relationship
+from sqlalchemy import Column, String
 
 
 class State(BaseModel, Base):
     """ State class """
+
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = "states"
         name = Column(String(128), nullable=False)
@@ -22,8 +23,8 @@ class State(BaseModel, Base):
     @property
     def cities(self):
         """Getter for cities"""
-        city_list = []
+        cities = []
         for city in models.storage.all(City).values():
             if city.state_id == self.id:
-                city_list.append(city)
-        return city_list
+                cities.append(city)
+        return cities
