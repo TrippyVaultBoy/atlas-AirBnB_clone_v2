@@ -75,8 +75,8 @@ class HBNBCommand(cmd.Cmd):
                 if pline:
                     # check for *args or **kwargs
                     if (pline[0] == '{' and pline[-1] == '}'
-                        and type(eval(pline)) is dict):
-                            _args = pline
+                    and type(eval(pline)) is dict):
+                        _args = pline
                     else:
                         _args = pline.replace(',', '')
             line = ' '.join([_cmd, _cls, _id, _args])
@@ -337,4 +337,3 @@ class HBNBCommand(cmd.Cmd):
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
-
