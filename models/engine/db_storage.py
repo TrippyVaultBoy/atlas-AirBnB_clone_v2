@@ -60,7 +60,7 @@ class DBStorage:
                 key = f"{obj.__class__.__name__}.{obj.id}"
                 objects[key] = obj
         return objects
-    
+
     def new(self, obj):
         """add the object to the current database session"""
         self.__session.add(obj)
