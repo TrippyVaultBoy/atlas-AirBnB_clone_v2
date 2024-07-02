@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ Console Module """
+import models
 import cmd
 import sys
 from models.base_model import BaseModel
@@ -11,6 +12,8 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from shlex import split
+from sqlalchemy import Column, ForeignKey 
+import shlex
 
 
 class HBNBCommand(cmd.Cmd):
@@ -205,23 +208,23 @@ class HBNBCommand(cmd.Cmd):
         print("Destroys an individual instance of a class")
         print("[Usage]: destroy <className> <objectId>\n")
 
-    def do_all(self, args):
+    def do_all(self, arg):
         """ Shows all objects, or all objects of a class"""
-        print_list = []
-
-        if args:
-            args = args.split(' ')[0]  # remove possible trailing args
-            if args not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+        args = shlex.split(arg)
+        objects = []
+        if len(args) == 0:
+            obj_dict = storage.all()
+        elif args[0] in HBNBCommand.classes:
+            cls = HBNBCommand.classes[args[0]]
+            obj_dict = storage.all(cls)
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
-
-        print(print_list)
+            print("** class doesn't exist **")
+            return
+        for k in obj_dict:
+            objects.append(str(obj_dict[k]))
+        print("[", end="")
+        print(", ".join(objects), end="")
+        print("]")
 
     def help_all(self):
         """ Help information for the all command """
