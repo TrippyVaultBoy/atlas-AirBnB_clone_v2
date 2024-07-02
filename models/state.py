@@ -2,8 +2,7 @@
 """ State Module for HBNB project """
 """Now includes switch for new storage system"""
 import models
-from models.base_model import BaseModel
-from models.base_model import Base
+from models.base_model import BaseModel, Base
 from models.city import City
 import os
 from sqlalchemy.orm import relationship
@@ -25,7 +24,7 @@ class State(BaseModel, Base):
     def cities(self):
         """Getter for cities"""
         cities = []
-        for city in models.storage.all("City").values():
+        for city in models.storage.all(City).values():
             if city.state_id == self.id:
                 cities.append(city)
         return cities

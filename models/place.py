@@ -1,18 +1,21 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
-from models.base_model import BaseModel
 import models
+from models.base_model import BaseModel, Base
+from models.review import Review
+from models.amenity import Amenity
 import os
-from sqlalchemy import Column
-from sqlalchemy import String
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import Float
-from sqlalchemy import Text
+from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import relationship
 
 
-class Place(BaseModel):
+if os.getenv("HBNB_TYPE_STORAGE") == "db":
+    place_amenity = Table('place_amenity', Base.metadata,
+                          Column("place_id", String(60), ForeignKey("places.id"), primary_key=True, nullable=False),
+                          Column("amenity_id", String(60), ForeignKey("amenities.id"), primary_key=True, nullable=False))
+
+
+class Place(BaseModel, Base):
     """ A place to stay """
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
         __tablename__ = "places"
@@ -26,8 +29,8 @@ class Place(BaseModel):
         price_by_night = Column(Integer, nullable=False, default=0)
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
-        reviews = relationship("Review", backref="place", cascade="delete")
-        amenities = relationship("Amenity", secondary="place_amenity", backref="places")
+        reviews = relationship("Review", backref="place")
+        amenities = relationship("Amenity", secondary="place_amenity", backref="place_amenity")
     else:
         city_id = ""
         user_id = ""
@@ -48,7 +51,7 @@ class Place(BaseModel):
         @property
         def reviews(self):
             reviews = []
-            all_reviews = models.storage.all("Review")
+            all_reviews = models.storage.all(Review)
             for review in all_reviews.values():
                 if review.place_id == self.id:
                     reviews.append(review)
@@ -57,7 +60,7 @@ class Place(BaseModel):
         @property
         def amenities(self):
             amenities = []
-            all_amenities = models.storage.all("Amenity")
+            all_amenities = models.storage.all(Amenity)
             for amenity in all_amenities.values():
                 if amenity.id in self.amenity_ids:
                     amenities.append(amenity)
