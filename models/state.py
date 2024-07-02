@@ -7,6 +7,7 @@ import os
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String
 
+
 class State(BaseModel, Base):
     """ State class """
 
