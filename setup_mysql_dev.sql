@@ -1,5 +1,5 @@
--- creates hbnb_test_db database
--- creates hbnb_test user and grants privileges
+-- creates hbnb_dev_db database
+-- creates hbnb_dev user and grants privileges
 
 CREATE DATABASE IF NOT EXISTS hbnb_dev_db;
 
