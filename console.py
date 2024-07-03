@@ -195,9 +195,11 @@ class HBNBCommand(cmd.Cmd):
             return
 
         key = c_name + "." + c_id
+        objs = models.storage.all()
 
-        if key in models.storage.all():
-            models.storage.all().pop(key)
+        if key in objs:
+            obj = objs[key]
+            models.storage.delete(obj)
             models.storage.save()
         else:
             print("** no instance found **")
