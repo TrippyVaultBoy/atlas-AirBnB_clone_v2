@@ -1,22 +1,21 @@
 #!/usr/bin/python3
 """This module defines a class User"""
-import models
 from models.base_model import BaseModel, Base
+from sqlalchemy import String, Column
 import os
-from sqlalchemy import Column, String, Column, String
 from sqlalchemy.orm import relationship
 
 
 class User(BaseModel, Base):
     """This class defines a user by various attributes"""
-    if os.getenv("HBNB_TYPE_STORAGE") == "db":
-        __tablename__ = "users"
+    __tablename__ = 'users'
+    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
         email = Column(String(128), nullable=False)
         password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
-        places = relationship("Place", backref="user", cascade="delete")
-        reviews = relationship("Review", backref="user", cascade="delete")
+        places = relationship('Place', backref='user', cascade='delete')
+        reviews = relationship('Review', backref='user', cascade='delete')
     else:
         email = ''
         password = ''
@@ -24,5 +23,5 @@ class User(BaseModel, Base):
         last_name = ''
 
     def __init__(self, *args, **kwargs):
-        """Instantiation of a User object"""
+        """Initializes user"""
         super().__init__(*args, **kwargs)

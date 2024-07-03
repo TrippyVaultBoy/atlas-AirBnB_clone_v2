@@ -5,8 +5,12 @@ import models
 from datetime import datetime
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
+import os
 
-Base = declarative_base()
+if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+    Base = declarative_base()
+else:
+    Base = object
 
 
 class BaseModel:
@@ -16,22 +20,6 @@ class BaseModel:
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow)
 
     """A base class for all hbnb models"""
-
-    # Add or replace in class BaseModel:
-
-    # class attribute id
-    # represents a column containing a unique string (60 chars)
-    # can't be null
-    # primary key
-    # class attribute created_at
-    # represents a column containing a datetime
-    # can't be null
-    # default value is the current datetime ("datetime.utcnow()")
-    # class attribute updated_at
-    # represents a column containing a datetime
-    # can't be null
-    # default value is the current datetime ("datetime.utcnow()")
-
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
         if not kwargs:
@@ -39,26 +27,13 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
+            storage.new(self)
         else:
-            if not kwargs.get('updated_at'):
-                kwargs['updated_at'] = datetime.utcnow()
-            else:
-                kwargs['updated_at'] = (datetime.strptime,
-                                        (kwargs['updated_at'],
-                                         '%Y-%m-%dT%H:%M:%S.%f'))
-
-            if not kwargs.get('created_at'):
-                kwargs['created_at'] = datetime.utcnow()
-            else:
-                kwargs['created_at'] = (datetime.strptime,
-                                        (kwargs['created_at'],
-                                         '%Y-%m-%dT%H:%M:%S.%f'))
-
-            if kwargs.get('__class__'):
-                del kwargs['__class__']
-
-            self.id = kwargs.get('id') or str(uuid.uuid4())
-
+            kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
+                                                     '%Y-%m-%dT%H:%M:%S.%f')
+            kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
+                                                     '%Y-%m-%dT%H:%M:%S.%f')
+            del kwargs['__class__']
             self.__dict__.update(kwargs)
 
     def __str__(self):
@@ -89,8 +64,3 @@ class BaseModel:
         if '_sa_instance_state' in dictionary:
             del dictionary['_sa_instance_state']
         return dictionary
-
-    def delete(self):
-        """deletes an instance based on class name and id"""
-        from models import storage
-        storage.delete(self)

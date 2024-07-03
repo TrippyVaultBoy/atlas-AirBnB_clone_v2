@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """ Console Module """
+import models
 import cmd
 import sys
 from models.base_model import BaseModel
@@ -11,6 +12,8 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 from shlex import split
+from sqlalchemy import Column, ForeignKey 
+import shlex
 
 
 class HBNBCommand(cmd.Cmd):
@@ -74,11 +77,12 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if (pline[0] == '{' and pline[-1] == '}'
-                            and type(eval(pline)) is dict):
+                    if pline[0] == '{' and pline[-1] =='}'\
+                            and type(eval(pline)) is dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
+                        # _args = _args.replace('\"', '')
             line = ' '.join([_cmd, _cls, _id, _args])
 
         except Exception as mess:
@@ -119,23 +123,15 @@ class HBNBCommand(cmd.Cmd):
             if not args:
                 raise SyntaxError()
             params = args.split(" ")
-            print(params)
             obj = eval("{}()".format(params[0]))
+            for i in range(1, len(params)):
+                attr_name, attr_value = params[i].split('=')
+                if attr_value:
+                    setattr(obj, attr_name, attr_value)
+                else:
+                    setattr(obj, attr_name, None)
             obj.save()
             print("{}".format(obj.id))
-            for i in range(1, len(params)):
-                params[i] = params[i].replace('=', ' ')
-
-                attributes = split(params[i])
-                attributes[1] = attributes[1].replace('_', ' ')
-
-                try:
-                    var = eval(attributes[1])
-                    attributes[1] = var
-                except (SyntaxError, NameError, ValueError) as e:
-                    print(f"Error: {e}")
-                if type(attributes[1]) is not tuple:
-                    setattr(obj, attributes[0], attributes[1])
         except SyntaxError:
             print("** class name missing **")
         except NameError:
@@ -202,7 +198,7 @@ class HBNBCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del (storage.all()[key])
+            del(storage.all()[key])
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -212,23 +208,23 @@ class HBNBCommand(cmd.Cmd):
         print("Destroys an individual instance of a class")
         print("[Usage]: destroy <className> <objectId>\n")
 
-    def do_all(self, args):
+    def do_all(self, arg):
         """ Shows all objects, or all objects of a class"""
-        print_list = []
-
-        if args:
-            args = args.split(' ')[0]  # remove possible trailing args
-            if args not in HBNBCommand.classes:
-                print("** class doesn't exist **")
-                return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+        args = shlex.split(arg)
+        objects = []
+        if len(args) == 0:
+            obj_dict = storage.all()
+        elif args[0] in HBNBCommand.classes:
+            cls = HBNBCommand.classes[args[0]]
+            obj_dict = storage.all(cls)
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
-
-        print(print_list)
+            print("** class doesn't exist **")
+            return
+        for k in obj_dict:
+            objects.append(str(obj_dict[k]))
+        print("[", end="")
+        print(", ".join(objects), end="")
+        print("]")
 
     def help_all(self):
         """ Help information for the all command """
@@ -334,7 +330,6 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
-
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
