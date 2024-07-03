@@ -3,6 +3,7 @@
 import models
 import cmd
 import sys
+import models
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -177,11 +178,9 @@ class HBNBCommand(cmd.Cmd):
 
     def do_destroy(self, args):
         """ Destroys a specified object """
-        new = args.partition(" ")
-        c_name = new[0]
-        c_id = new[2]
-        if c_id and ' ' in c_id:
-            c_id = c_id.partition(' ')[0]
+        arg_list = shlex.split(args)
+        c_name = arg_list[0]
+        c_id = arg_list[1]
 
         if not c_name:
             print("** class name missing **")
@@ -197,10 +196,10 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
 
-        try:
-            del(storage.all()[key])
-            storage.save()
-        except KeyError:
+        if key in models.storage.all():
+            models.storage.all().pop(key)
+            models.storage.save()
+        else:
             print("** no instance found **")
 
     def help_destroy(self):
