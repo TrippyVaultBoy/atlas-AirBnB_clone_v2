@@ -49,7 +49,9 @@ def number_odd_even(n):
         parity = "even"
     else:
         parity = "odd"
-    return (render_template("6-number_odd_or_even.html", number=n, even_odd=parity))
+    return (render_template("6-number_odd_or_even.html",
+                            number=n, even_odd=parity)
+                            )
 
 
 if __name__ == '__main__':
