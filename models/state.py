@@ -18,3 +18,12 @@ class State(BaseModel, Base):
     else:
         name = ""
     cites = []
+
+    @property
+    def cities(self):
+        """getter for cities related to state"""
+        cities = []
+        for city in models.storage.all(City).values():
+            if city.state_id == self.id:
+                cities.append(city)
+        return (cities)
