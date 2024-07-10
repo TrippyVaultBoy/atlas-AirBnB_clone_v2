@@ -69,11 +69,11 @@ def list_states():
     states = sorted(all_states, key=lambda i: i.name)
     return (render_template("7-states_list.html", states=states))
 
-@app.route("/cities_by_state", strict_slashes=False)
+@app.route("/cities_by_states", strict_slashes=False)
 def list_cities_by_states():
     """display a list of cities by state"""
     list_states = sorted(storage.all("State").values(), key=lambda i: i.name)
-    return (render_template("8-cities_by_state.html", states=list_states))
+    return (render_template("8-cities_by_states.html", states=list_states))
 
 
 if __name__ == '__main__':
