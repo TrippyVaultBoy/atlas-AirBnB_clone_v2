@@ -3,6 +3,7 @@
 from flask import Flask, render_template
 from models import storage
 from models.state import State
+import os
 
 app = Flask(__name__)
 
@@ -70,6 +71,7 @@ def list_states():
 
 
 if __name__ == '__main__':
-    
-
+    file_path = os.path.join(os.path.dirname(__file__), 'main_0.sql')    
+    command = f"cat {file_path} | mysql -hlocalhost -uroot -proot > /dev/null 2>&1"
+    os.system(command)
     app.run(host='0.0.0.0', port=5000)
